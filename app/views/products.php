@@ -31,11 +31,25 @@ $paginated_products = array_slice($filtered_products, $start_index, $products_pe
 ?>
 
 <style>
+    :root {
+    --primary: #2a4b2c;       /* Dark green */
+    --primary-light: #3a6b3c; /* Medium green */
+    --primary-dark: #1a3b1c;  /* Darker green */
+    --accent: #d4af37;        /* Gold accent */
+    --accent-dark: #b8941f;   /* Darker gold */
+    --neutral: #f5f1e8;       /* Light beige/cream */
+    --neutral-dark: #e8e2d4;  /* Darker beige */
+    --text: #2c2c2c;          /* Dark gray for text */
+    --text-light: #5a5a5a;    /* Light gray for secondary text */
+    --white: #ffffff;         /* Pure white */
+    --shadow: rgba(0, 0, 0, 0.08);     /* Subtle shadow */
+    --shadow-hover: rgba(0, 0, 0, 0.12); /* Hover shadow */
+}
 /* Modern Minimalist Products Page */
 .products-hero {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
-    padding: 6rem 0 4rem;
+    padding: 8rem 0 4rem;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -48,8 +62,7 @@ $paginated_products = array_slice($filtered_products, $start_index, $products_pe
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.05) 0%, transparent 50%),
+    background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.05) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(255,255,255,0.03) 0%, transparent 50%);
 }
 
@@ -75,12 +88,18 @@ $paginated_products = array_slice($filtered_products, $start_index, $products_pe
 
 /* Search and Filters Section */
 .filters-section {
-    background: var(--white);
+    background: #fff;
     padding: 2rem 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.search-row {
     display: flex;
     gap: 1.5rem;
     align-items: center;
@@ -118,10 +137,24 @@ $paginated_products = array_slice($filtered_products, $start_index, $products_pe
     color: var(--text-light);
 }
 
+.categories-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.categories-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 600;
+    text-align: center;
+}
+
 .category-filters {
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .category-filter {
@@ -396,21 +429,21 @@ $paginated_products = array_slice($filtered_products, $start_index, $products_pe
 
 @media (max-width: 768px) {
     .products-hero {
-        padding: 4rem 0 3rem;
+        padding: 6rem 0 3rem;
     }
     
     .products-hero h1 {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
     }
     
-    .filters-container {
+    .search-row {
         flex-direction: column;
-        align-items: stretch;
         gap: 1rem;
     }
     
     .search-box {
         min-width: auto;
+        width: 100%;
     }
     
     .category-filters {
@@ -432,8 +465,12 @@ $paginated_products = array_slice($filtered_products, $start_index, $products_pe
 }
 
 @media (max-width: 480px) {
+    .products-hero {
+        padding: 5rem 0 2rem;
+    }
+    
     .products-hero h1 {
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
     
     .hero-subtitle {
@@ -447,6 +484,10 @@ $paginated_products = array_slice($filtered_products, $start_index, $products_pe
     .category-filter {
         padding: 0.6rem 1rem;
         font-size: 0.8rem;
+    }
+    
+    .filters-section {
+        padding: 1.5rem 0;
     }
 }
 </style>
@@ -463,43 +504,58 @@ $paginated_products = array_slice($filtered_products, $start_index, $products_pe
 <section class="filters-section">
     <div class="container">
         <form method="GET" action="" class="filters-container" id="filtersForm">
-            <div class="search-box">
-                <div class="search-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.35-4.35"/>
-                    </svg>
+            <div class="search-row">
+                <div class="search-box">
+                    <div class="search-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                    </div>
+                    <input 
+                        type="text" 
+                        name="search" 
+                        class="search-input" 
+                        placeholder="Search products by name or description..." 
+                        value="<?= htmlspecialchars($search_query) ?>"
+                    >
                 </div>
-                <input 
-                    type="text" 
-                    name="search" 
-                    class="search-input" 
-                    placeholder="Search products..." 
-                    value="<?= htmlspecialchars($search_query) ?>"
-                >
             </div>
             
-            <div class="category-filters">
-                <a href="?search=<?= urlencode($search_query) ?>&category=all&page=1" 
-                   class="category-filter <?= $category_filter === 'all' ? 'active' : '' ?>">
-                    All Products
-                </a>
-                <?php foreach ($categories as $category): ?>
-                    <a href="?search=<?= urlencode($search_query) ?>&category=<?= urlencode($category) ?>&page=1" 
-                       class="category-filter <?= $category_filter === $category ? 'active' : '' ?>">
-                        <?= htmlspecialchars($category) ?>
+            <div class="categories-row">
+                <div class="categories-label">Filter by Category:</div>
+                <div class="category-filters">
+                    <a href="?search=<?= urlencode($search_query) ?>&category=all&page=1" 
+                       class="category-filter <?= $category_filter === 'all' ? 'active' : '' ?>">
+                        All Products
                     </a>
-                <?php endforeach; ?>
+                    <?php foreach ($categories as $category): ?>
+                        <a href="?search=<?= urlencode($search_query) ?>&category=<?= urlencode($category) ?>&page=1" 
+                           class="category-filter <?= $category_filter === $category ? 'active' : '' ?>">
+                            <?= htmlspecialchars($category) ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </form>
         
         <div class="results-info">
-            Showing <?= count($paginated_products) ?> of <?= $total_products ?> products
-            <?php if (!empty($search_query)): ?>
-                for "<?= htmlspecialchars($search_query) ?>"
-            <?php endif; ?>
-            <?php if ($category_filter !== 'all'): ?>
-                in <?= htmlspecialchars($category_filter) ?>
+            <?php if ($total_products > 0): ?>
+                Showing <?= count($paginated_products) ?> of <?= $total_products ?> products
+                <?php if (!empty($search_query)): ?>
+                    for "<strong><?= htmlspecialchars($search_query) ?></strong>"
+                <?php endif; ?>
+                <?php if ($category_filter !== 'all'): ?>
+                    in <strong><?= htmlspecialchars($category_filter) ?></strong>
+                <?php endif; ?>
+            <?php else: ?>
+                No products found
+                <?php if (!empty($search_query)): ?>
+                    for "<strong><?= htmlspecialchars($search_query) ?></strong>"
+                <?php endif; ?>
+                <?php if ($category_filter !== 'all'): ?>
+                    in <strong><?= htmlspecialchars($category_filter) ?></strong>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

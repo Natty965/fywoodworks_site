@@ -4,6 +4,20 @@ require_once __DIR__ . '/partials/header.php';
 ?>
 
 <style>
+        :root {
+    --primary: #2a4b2c;       /* Dark green */
+    --primary-light: #3a6b3c; /* Medium green */
+    --primary-dark: #1a3b1c;  /* Darker green */
+    --accent: #d4af37;        /* Gold accent */
+    --accent-dark: #b8941f;   /* Darker gold */
+    --neutral: #f5f1e8;       /* Light beige/cream */
+    --neutral-dark: #e8e2d4;  /* Darker beige */
+    --text: #2c2c2c;          /* Dark gray for text */
+    --text-light: #5a5a5a;    /* Light gray for secondary text */
+    --white: #ffffff;         /* Pure white */
+    --shadow: rgba(0, 0, 0, 0.08);     /* Subtle shadow */
+    --shadow-hover: rgba(0, 0, 0, 0.12); /* Hover shadow */
+}
 /* Modern Minimalist Services Page */
 .services-hero {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
